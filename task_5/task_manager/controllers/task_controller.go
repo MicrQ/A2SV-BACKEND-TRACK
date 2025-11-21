@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"task_manager/data"
 	"task_manager/models"
@@ -28,20 +27,23 @@ func (tc *TaskController) Register(rg *gin.RouterGroup) {
 }
 
 func (tc *TaskController) ListTasks(c *gin.Context) {
-	tasks := tc.service.GetAll()
+	tasks, err := tc.service.GetAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to retrieve tasks"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"data": tasks})
 }
 
 func (tc *TaskController) GetTask(c *gin.Context) {
 	idStr := c.Param("id")
-	id, err := strconv.Atoi(idStr)
+	task, err := tc.service.GetByID(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
-		return
-	}
-	task, err := tc.service.GetByID(id)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "task not found"})
+		if err == data.ErrNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "task not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to retrieve task"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": task})
@@ -53,25 +55,28 @@ func (tc *TaskController) CreateTask(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	created := tc.service.Create(input)
+	created, err := tc.service.Create(input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create task"})
+		return
+	}
 	c.JSON(http.StatusCreated, gin.H{"data": created})
 }
 
 func (tc *TaskController) UpdateTask(c *gin.Context) {
 	idStr := c.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
-		return
-	}
 	var input models.Task
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	updated, err := tc.service.Update(id, input)
+	updated, err := tc.service.Update(idStr, input)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "task not found"})
+		if err == data.ErrNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "task not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update task"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": updated})
@@ -79,13 +84,12 @@ func (tc *TaskController) UpdateTask(c *gin.Context) {
 
 func (tc *TaskController) DeleteTask(c *gin.Context) {
 	idStr := c.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
-		return
-	}
-	if err := tc.service.Delete(id); err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "task not found"})
+	if err := tc.service.Delete(idStr); err != nil {
+		if err == data.ErrNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "task not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to delete task"})
 		return
 	}
 	c.Status(http.StatusNoContent)

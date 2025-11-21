@@ -1,10 +1,27 @@
 # Task Manager API Documentation
 
-A RESTful API for managing tasks, built with Go and Gin. This API supports basic CRUD operations using an in-memory database.
+A RESTful API for managing tasks, built with Go and Gin. This API supports basic CRUD operations using MongoDB for persistent data storage.
 
 ## Base URL
 ```
 http://localhost:8080
+```
+
+---
+
+## MongoDB Configuration
+
+The API uses MongoDB for data persistence. Configure the following environment variables:
+
+- `MONGODB_URI`: MongoDB connection URI (default: `mongodb://localhost:27017`)
+- `DB_NAME`: Database name (default: `taskmanager`)
+- `COLLECTION_NAME`: Collection name (default: `tasks`)
+
+Example:
+```bash
+export MONGODB_URI="mongodb://localhost:27017"
+export DB_NAME="taskmanager"
+export COLLECTION_NAME="tasks"
 ```
 
 ---
@@ -19,10 +36,10 @@ http://localhost:8080
 200 OK
 [
   {
-    "id": 1,
+    "id": "507f1f77bcf86cd799439011",
     "title": "Buy groceries",
     "description": "Milk, eggs, bread",
-    "due_date": "2025-11-30",
+    "due_date": "2025-11-30T00:00:00Z",
     "status": "pending"
   }
 ]
@@ -37,10 +54,10 @@ http://localhost:8080
 ```json
 200 OK
 {
-  "id": 1,
+  "id": "507f1f77bcf86cd799439011",
   "title": "Buy groceries",
   "description": "Milk, eggs, bread",
-  "due_date": "2025-11-30",
+  "due_date": "2025-11-30T00:00:00Z",
   "status": "pending"
 }
 ```
@@ -62,7 +79,7 @@ http://localhost:8080
 {
   "title": "New Task",
   "description": "Random description",
-  "due_date": "2025-12-28",
+  "due_date": "2025-12-28T00:00:00Z",
   "status": "pending"
 }
 ```
@@ -70,10 +87,10 @@ http://localhost:8080
 ```json
 201 Created
 {
-  "id": 2,
+  "id": "507f1f77bcf86cd799439012",
   "title": "New Task",
   "description": "Random description",
-  "due_date": "2025-12-28",
+  "due_date": "2025-12-28T00:00:00Z",
   "status": "pending"
 }
 ```
@@ -95,7 +112,7 @@ http://localhost:8080
 {
   "title": "Buy groceries (updated)",
   "description": "Milk, eggs, bread, bananas",
-  "due_date": "2025-11-30",
+  "due_date": "2025-11-30T00:00:00Z",
   "status": "in_progress"
 }
 ```
@@ -103,10 +120,10 @@ http://localhost:8080
 ```json
 200 OK
 {
-  "id": 1,
+  "id": "507f1f77bcf86cd799439011",
   "title": "Buy groceries (updated)",
   "description": "Milk, eggs, bread, bananas",
-  "due_date": "2025-11-30",
+  "due_date": "2025-11-30T00:00:00Z",
   "status": "in_progress"
 }
 ```
@@ -139,17 +156,18 @@ http://localhost:8080
 
 ## Error Handling
 - All error responses are returned in JSON format with an `error` field.
-- Common HTTP status codes: 200 (OK), 201 (Created), 204 (No Content), 400 (Bad Request), 404 (Not Found)
+- Common HTTP status codes: 200 (OK), 201 (Created), 204 (No Content), 400 (Bad Request), 404 (Not Found), 500 (Internal Server Error)
 
 ## Notes
-- All date/time fields use ISO 8601 format (e.g., `2025-11-30`).
-- The API uses an in-memory database; data will be lost when the server restarts.
+- All date/time fields use RFC3339 format (e.g., `2025-11-30T00:00:00Z`).
+- The API uses MongoDB for persistent data storage; data persists across server restarts.
+- Task IDs are MongoDB ObjectIDs represented as hexadecimal strings.
 
 ## Example cURL Requests
 
 - **Create Task:**
 ```bash
-curl -X POST http://localhost:8080/tasks -H "Content-Type: application/json" -d '{"title":"New Task","description":"Test","due_date":"2025-12-28","status":"pending"}'
+curl -X POST http://localhost:8080/tasks -H "Content-Type: application/json" -d '{"title":"New Task","description":"Test","due_date":"2025-12-28T00:00:00Z","status":"pending"}'
 ```
 
 - **Get All Tasks:**
@@ -159,12 +177,12 @@ curl http://localhost:8080/tasks
 
 - **Update Task:**
 ```bash
-curl -X PUT http://localhost:8080/tasks/1 -H "Content-Type: application/json" -d '{"title":"Updated Task","description":"Updated","due_date":"2025-11-30","status":"completed"}'
+curl -X PUT http://localhost:8080/tasks/507f1f77bcf86cd799439011 -H "Content-Type: application/json" -d '{"title":"Updated Task","description":"Updated","due_date":"2025-11-30T00:00:00Z","status":"completed"}'
 ```
 
 - **Delete Task:**
 ```bash
-curl -X DELETE http://localhost:8080/tasks/1
+curl -X DELETE http://localhost:8080/tasks/507f1f77bcf86cd799439011
 ```
 
 ### copyright© 2025
