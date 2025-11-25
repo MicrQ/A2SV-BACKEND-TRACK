@@ -140,3 +140,4 @@ func (s *TaskService) Close() error {
 
 	return s.client.Disconnect(ctx)
 }
+

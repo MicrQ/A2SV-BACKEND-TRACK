@@ -21,8 +21,15 @@ func main() {
 	}
 	defer taskService.Close()
 
-	// Build router
-	r := router.SetupRouter(taskService)
+	// Create the MongoDB user service
+	userService, err := data.NewUserService(mongoURI, dbName, "users")
+	if err != nil {
+		log.Fatalf("Failed to create user service: %v", err)
+	}
+	defer userService.Close()
+
+	// Build router (pass both services so auth routes can be registered)
+	r := router.SetupRouter(taskService, userService)
 
 	// Run server on port 8080
 	log.Println("Server starting on :8080")
