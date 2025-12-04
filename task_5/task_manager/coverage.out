@@ -1,0 +1,25 @@
+mode: atomic
+task_manager/Tests/mocks/mock_task_repository.go:12.62,14.50 2 0
+task_manager/Tests/mocks/mock_task_repository.go:14.50,16.3 1 0
+task_manager/Tests/mocks/mock_task_repository.go:17.2,17.27 1 0
+task_manager/Tests/mocks/mock_task_repository.go:20.70,22.44 2 0
+task_manager/Tests/mocks/mock_task_repository.go:22.44,24.3 1 0
+task_manager/Tests/mocks/mock_task_repository.go:25.2,25.37 1 0
+task_manager/Tests/mocks/mock_task_repository.go:28.73,30.50 2 0
+task_manager/Tests/mocks/mock_task_repository.go:30.50,32.3 1 0
+task_manager/Tests/mocks/mock_task_repository.go:33.2,33.37 1 0
+task_manager/Tests/mocks/mock_task_repository.go:36.84,38.50 2 0
+task_manager/Tests/mocks/mock_task_repository.go:38.50,40.3 1 0
+task_manager/Tests/mocks/mock_task_repository.go:41.2,41.37 1 0
+task_manager/Tests/mocks/mock_task_repository.go:44.54,47.2 2 0
+task_manager/Tests/mocks/mock_task_repository.go:49.44,51.2 1 0
+task_manager/Tests/mocks/mock_user_repository.go:12.89,14.44 2 0
+task_manager/Tests/mocks/mock_user_repository.go:14.44,16.3 1 0
+task_manager/Tests/mocks/mock_user_repository.go:17.2,17.37 1 0
+task_manager/Tests/mocks/mock_user_repository.go:20.82,22.44 2 0
+task_manager/Tests/mocks/mock_user_repository.go:22.44,24.3 1 0
+task_manager/Tests/mocks/mock_user_repository.go:25.2,25.37 1 0
+task_manager/Tests/mocks/mock_user_repository.go:28.82,31.2 2 0
+task_manager/Tests/mocks/mock_user_repository.go:33.62,36.2 2 0
+task_manager/Tests/mocks/mock_user_repository.go:38.44,40.2 1 0
+task_manager/Tests/mocks/mock_user_repository.go:42.54,45.2 2 0
